@@ -335,3 +335,71 @@ Iniciando o Jogo!
         
         #pergunta-se quais as coordenadas do tiro do jogador
         print("\nDefine as coordenadas do seu próximo disparo")
+        while True:
+        # Guarda a letra
+            while True:
+                opcoes = COLUNAS
+                letra = str(input("Informe a letra: ")).upper()
+                if letra in opcoes:
+                    break
+                else:
+                    print(f"'{letra}' é uma opção inválida! Tente novamente")
+            # Guarda a linha
+            while True:
+                opcoes = LINHAS
+                linha = str(input("Informe a linha: "))
+                if linha in opcoes:
+                    break
+                else:
+                    print(f"'{linha}' é uma opção inválida! Tente novamente")
+            # Verifica se já jogou na posição
+            if mapa_c_real[LINHAS.index(linha)][COLUNAS.index(letra)] in ('X', 'A'):
+                print(f"Você já fez um disparo na coordenada '{letra+linha}', escolha outra!")
+            else:
+                break
+
+        while True:
+            tiro_comp = random.choice(tiros_possiveis)
+            tiros_possiveis.remove(tiro_comp)
+            coluna_comp = tiro_comp[0]
+            linha_comp  = tiro_comp[1]
+            if mapa_j[LINHAS.index(linha_comp)][COLUNAS.index(coluna_comp)] not in ('X', 'A'):
+                break
+        
+        # Modifica os mapas, caso o tiro tenha acertado ou não
+        tiro_jogador = tiro(mapa_c_real, LINHAS.index(linha), COLUNAS.index(letra))
+        tiro_comp = tiro(mapa_j, LINHAS.index(linha_comp), COLUNAS.index(coluna_comp))
+
+        # Substitui no mapa visível para o jogador, se o tiro acertou ou não algum navio
+        substitui_mapa(mapa_c, LINHAS.index(linha), COLUNAS.index(letra), tiro_jogador)
+        substitui_mapa(mapa_j, LINHAS.index(linha_comp), COLUNAS.index(coluna_comp), tiro_comp)
+
+        # Printa-se as coordenadas dos tiros do jogador e do computador
+        print(f'\nJogador      ----->>>>> {letra}{linha}        {tiro_jogador}!')
+        print(f'Computador   ----->>>>> {coluna_comp}{linha_comp}        {tiro_comp}!\n')   
+
+        # Verifica-se se algum dos jogadores teve todos os navios afundados e quebra-se o loop
+        if foi_derrotado(mapa_j, mapa_c_real) == "Acabou para computador":
+            break  
+
+        if foi_derrotado(mapa_j, mapa_c_real) == "Acabou para jogador":
+            break
+
+    # Anuncia se o jogador perdeu ou ganhou o jogo!
+    if foi_derrotado(mapa_j, mapa_c_real) == "Acabou para computador":
+        print(
+"""
+#########################################
+#####   Parabéns! Você ganhou! :D   #####
+#########################################
+"""
+        )
+
+    if foi_derrotado(mapa_j, mapa_c_real) == "Acabou para jogador":
+        print(
+"""
+#########################################
+##########   Você perdeu! :/   ##########
+#########################################
+"""
+        )
